@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - PlantScan AI{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in" style="text-align: center; padding: 4rem 0;">
+    <h1
+        style="font-size: 3.5rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #10b981, #3b82f6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+        Detect Plant Diseases <br> with Advanced AI
+    </h1>
+    <p style="font-size: 1.25rem; color: var(--text-dim); max-width: 700px; margin: 0 auto 2.5rem;">
+        Upload a photo of your plant and our machine learning model will identify any diseases
+        with high accuracy and suggest remedies in seconds.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="{% url 'predict' %}" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Start
+            Analysis</a>
+        <a href="#features" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.1rem;">Learn More</a>
+    </div>
+</div>
+
+<div id="features" style="padding: 4rem 0;">
+    <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2rem; color: var(--text-main);">Why Choose PlantScan?
+    </h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+            <h3 style="margin-bottom: 1rem; color: var(--accent-green);">Instant Results</h3>
+            <p style="color: var(--text-dim);">Get high-accuracy reports in seconds after upload using our CNN model.
+            </p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔬</div>
+            <h3 style="margin-bottom: 1rem; color: var(--accent-green);">High Accuracy</h3>
+            <p style="color: var(--text-dim);">Trained on 87,000+ images from the PlantVillage dataset.</p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🛡️</div>
+            <h3 style="margin-bottom: 1rem; color: var(--accent-green);">Actionable Advice</h3>
+            <p style="color: var(--text-dim);">Receive expert recommendations to treat and prevent future diseases.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - PlantScan{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 4rem auto;" class="animate-fade-in">
+    <div class="card">
+        <h2 style="margin-bottom: 2rem; text-align: center; color: var(--accent-green);">Create Account</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}"
+                    id="{{ field.id_for_label }}" class="form-control" placeholder="{{ field.label }}">
+                {% if field.errors %}
+                <small style="color: #ef4444;">{{ field.errors.0 }}</small>
+                {% endif %}
+                {% if field.help_text %}
+                <small style="color: var(--text-dim); display: block; margin-top: 0.2rem;">{{ field.help_text|safe }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; margin-top: 1rem;">Sign
+                Up</button>
+        </form>
+        <p style="margin-top: 1.5rem; text-align: center; color: var(--text-dim);">
+            Already have an account? <a href="{% url 'login' %}"
+                style="color: var(--accent-green); text-decoration: none;">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
