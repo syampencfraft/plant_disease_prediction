@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #0f172a;
-            --secondary-bg: #1e293b;
+            /* Sophisticated HSL Palette */
+            --primary-bg: #0a0f1d;
+            --secondary-bg: #161e31;
             --accent-green: #10b981;
+            --accent-blue: #3b82f6;
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+
+            /* Enhanced Glassmorphism System */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-edge: rgba(255, 255, 255, 0.12);
+            --glass-blur: blur(16px);
+
+            /* Shadows & Transitions */
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -21,20 +32,26 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
             background-color: var(--primary-bg);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
             color: var(--text-main);
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
         nav {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 15, 29, 0.6);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
             border-bottom: 1px solid var(--glass-border);
             padding: 1rem 2rem;
             display: flex;
@@ -42,13 +59,18 @@
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            transition: var(--transition-smooth);
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-green);
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--accent-green), #6ee7b7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -57,114 +79,244 @@
 
         .nav-links {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
             align-items: center;
         }
 
         .nav-links a {
             color: var(--text-dim);
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: var(--transition-smooth);
             font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .nav-links a:not(.btn)::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-green);
+            transition: var(--transition-smooth);
         }
 
         .nav-links a:hover {
-            color: var(--accent-green);
+            color: var(--text-main);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         .btn {
-            padding: 0.5rem 1.2rem;
-            border-radius: 8px;
+            padding: 0.6rem 1.5rem;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
             cursor: pointer;
             border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
-            background-color: var(--accent-green);
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
             color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
         }
 
         .btn-primary:hover {
-            background-color: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
         }
 
         .btn-outline {
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
         }
 
         .btn-outline:hover {
-            background: var(--accent-green);
-            color: white;
+            background: var(--glass-border);
+            border-color: var(--accent-green);
+            transform: translateY(-1px);
         }
 
         main {
             flex: 1;
-            padding: 2rem;
-            max-width: 1200px;
+            padding: 3rem 2rem;
+            max-width: 1300px;
             margin: 0 auto;
             width: 100%;
         }
 
         footer {
-            padding: 2rem;
+            padding: 3rem 2rem;
             text-align: center;
             color: var(--text-dim);
             border-top: 1px solid var(--glass-border);
-            margin-top: 2rem;
+            background: rgba(10, 15, 29, 0.4);
+            font-size: 0.9rem;
         }
 
         .card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-edge), transparent);
+        }
+
+        .card:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         /* Forms */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-dim);
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.8rem;
-            border-radius: 8px;
-            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
             color: white;
             outline: none;
-            transition: border-color 0.3s ease;
+            transition: var(--transition-smooth);
+            font-size: 1rem;
         }
 
         .form-control:focus {
             border-color: var(--accent-green);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
         }
 
         .animate-fade-in {
-            animation: fadeIn 0.8s ease forwards;
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .animate-stagger>* {
+            opacity: 0;
+        }
+
+        .animate-stagger>*:nth-child(1) {
+            animation: fadeInUp 0.8s 0.1s forwards;
+        }
+
+        .animate-stagger>*:nth-child(2) {
+            animation: fadeInUp 0.8s 0.2s forwards;
+        }
+
+        .animate-stagger>*:nth-child(3) {
+            animation: fadeInUp 0.8s 0.3s forwards;
+        }
+
+        .animate-stagger>*:nth-child(4) {
+            animation: fadeInUp 0.8s 0.4s forwards;
+        }
+
+        .animate-stagger>*:nth-child(5) {
+            animation: fadeInUp 0.8s 0.5s forwards;
+        }
+
+        .glass-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        /* Responsive Improvements */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            /* Add mobile menu later if needed */
+            main {
+                padding: 2rem 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem !important;
+            }
         }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
+
 <body>
     <nav>
         <a href="{% url 'home' %}" class="logo">
@@ -172,12 +324,15 @@
         </a>
         <div class="nav-links">
             <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact' %}">Contact</a>
             {% if user.is_authenticated %}
-                <a href="{% url 'predict' %}">Predict</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
+            <a href="{% url 'predict' %}">Predict</a>
+            <a href="{% url 'history' %}">History</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
             {% else %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a>
             {% endif %}
         </div>
     </nav>
@@ -191,4 +346,5 @@
         &copy; 2026 PlantScan AI. All rights reserved.
     </footer>
 </body>
+
 </html>

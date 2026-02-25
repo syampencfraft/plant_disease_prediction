@@ -3,31 +3,44 @@
 {% block title %}Register - PlantScan{% endblock %}
 
 {% block content %}
-<div style="max-width: 400px; margin: 4rem auto;" class="animate-fade-in">
-    <div class="card">
-        <h2 style="margin-bottom: 2rem; text-align: center; color: var(--accent-green);">Create Account</h2>
-        <form method="post">
-            {% csrf_token %}
-            {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}"
-                    id="{{ field.id_for_label }}" class="form-control" placeholder="{{ field.label }}">
-                {% if field.errors %}
-                <small style="color: #ef4444;">{{ field.errors.0 }}</small>
-                {% endif %}
-                {% if field.help_text %}
-                <small style="color: var(--text-dim); display: block; margin-top: 0.2rem;">{{ field.help_text|safe }}</small>
-                {% endif %}
+<div style="min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+    <div style="width: 100%; max-width: 440px;" class="animate-fade-in">
+        <div class="card" style="padding: 3rem; border-top: 1px solid var(--glass-edge);">
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+                <div class="glass-icon" style="margin: 0 auto 1.5rem;">🔬</div>
+                <h2 style="font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">Create Account</h2>
+                <p style="color: var(--text-dim); font-size: 0.95rem;">Join the global network of botanical
+                    investigators</p>
             </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; margin-top: 1rem;">Sign
-                Up</button>
-        </form>
-        <p style="margin-top: 1.5rem; text-align: center; color: var(--text-dim);">
-            Already have an account? <a href="{% url 'login' %}"
-                style="color: var(--accent-green); text-decoration: none;">Login</a>
-        </p>
+
+            <form method="post" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}"
+                        id="{{ field.id_for_label }}" class="form-control" placeholder="Enter {{ field.label|lower }}">
+                    {% if field.errors %}
+                    <small style="color: #fb7185; font-size: 0.8rem; margin-top: 0.5rem; display: block;">
+                       {{ field.errors.0 }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; padding: 1rem; margin-top: 1.5rem; font-size: 1.05rem;">
+                    Initialize Account
+                </button>
+            </form>
+
+            <div
+                style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); text-align: center;">
+                <p style="color: var(--text-dim); font-size: 0.95rem;">
+                    Already an investigator? <a href="{% url 'login' %}"
+                        style="color: var(--accent-green); text-decoration: none; font-weight: 600;">Secure Login</a>
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

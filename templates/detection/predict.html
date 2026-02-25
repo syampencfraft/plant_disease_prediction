@@ -1,115 +1,150 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Plant Diagnosis - PlantScan AI{% endblock %}
 
 {% block content %}
-<div class="card animate-fade-in" style="max-width: 800px; margin: 2rem auto;">
-    <h2 style="text-align: center; margin-bottom: 2rem; color: var(--accent-green);">
-        Plant Disease Diagnosis
-    </h2>
+<div style="max-width: 900px; margin: 0 auto;">
+    <div class="animate-fade-in" style="text-align: center; margin-bottom: 4rem;">
+        <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem;">Diagnostic <span
+                style="color: var(--accent-green);">Laboratory</span></h1>
+        <p style="color: var(--text-dim); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">
+            Upload high-resolution imagery for real-time neural analysis. Our system identifies pathology with
+            laboratory precision.
+        </p>
+    </div>
 
-    <!-- Upload Form -->
-    <form method="post" enctype="multipart/form-data" style="margin-bottom: 2rem;">
-        {% csrf_token %}
+    <div class="card animate-fade-in"
+        style="padding: 3rem; margin-bottom: 4rem; border-top: 1px solid var(--glass-edge);">
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <div style="border: 2px dashed var(--border-color); border-radius: 12px; padding: 3rem;
-                    text-align: center; cursor: pointer; transition: all 0.3s;"
-            onclick="document.getElementById('imageInput').click()"
-            onmouseover="this.style.borderColor='var(--accent-green)'; this.style.background='rgba(16, 185, 129, 0.05)';"
-            onmouseout="this.style.borderColor='var(--border-color)'; this.style.background='transparent';">
+            <div id="dropZone" style="border: 2px dashed var(--glass-border); border-radius: 20px; padding: 4rem 2rem;
+                        text-align: center; cursor: pointer; transition: var(--transition-smooth);
+                        background: rgba(255,255,255,0.01); position: relative;"
+                onclick="document.getElementById('imageInput').click()">
 
-            <input type="file" name="image" id="imageInput" style="display: none;" accept="image/*"
-                   onchange="previewImage(this)" required>
+                <input type="file" name="image" id="imageInput" style="display: none;" accept="image/*"
+                    onchange="previewImage(this)" required>
 
-            <div id="uploadPlaceholder">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
-                <p style="font-size: 1.1rem; color: var(--text-dim);">
-                    Click to upload or drag and drop a leaf photo
-                </p>
-                <p style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.5rem;">
-                    JPG, PNG or WEBP (Max 5MB)
-                </p>
+                <div id="uploadPlaceholder">
+                    <div
+                        style="font-size: 4rem; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.3));">
+                        📸</div>
+                    <h3 style="margin-bottom: 0.5rem; color: #fff;">Select Plant Metadata</h3>
+                    <p style="font-size: 1rem; color: var(--text-dim);">
+                        Drag and drop or click to browse botanical records
+                    </p>
+                    <div
+                        style="margin-top: 1.5rem; display: inline-flex; gap: 1rem; font-size: 0.85rem; color: var(--text-dim); background: rgba(0,0,0,0.2); padding: 0.5rem 1rem; border-radius: 20px;">
+                        <span>JPG</span> • <span>PNG</span> • <span>WEBP</span>
+                    </div>
+                </div>
+
+                <img id="imagePreview"
+                    style="display: none; max-width: 100%; max-height: 400px; border-radius: 12px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
             </div>
 
-            <img id="imagePreview"
-                 style="display: none; max-width: 100%; border-radius: 8px; margin-top: 1rem;">
-        </div>
-
-        <button type="submit" class="btn btn-primary"
-                style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;">
-            <span>Analyze Plant</span>
-            <span id="spinner" style="display: none;"> ⌛</span>
-        </button>
-    </form>
+            <button type="submit" class="btn btn-primary" id="analyzeBtn"
+                style="width: 100%; margin-top: 2.5rem; padding: 1.2rem; font-size: 1.1rem;">
+                <span id="btnText">Initiate Neural Analysis</span>
+                <div id="loader" style="display: none; align-items: center; gap: 0.8rem;">
+                    <div class="spinner"></div>
+                    <span>Processing Sequences...</span>
+                </div>
+            </button>
+        </form>
+    </div>
 
     <!-- Result Section -->
     {% if condition_result %}
-    <div id="result" class="animate-fade-in"
-         style="border-top: 1px solid var(--border-color); padding-top: 2rem;">
+    <div id="result" class="animate-fade-in" style="margin-top: 4rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: start;">
 
-        <div style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
-
-            <!-- Image -->
-            <div style="flex: 1; min-width: 250px;">
-                <img src="{{ image_url }}" alt="Analyzed Leaf"
-                     style="width: 100%; border-radius: 12px;
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <!-- Analysis Subject -->
+            <div class="card" style="padding: 1rem; background: rgba(0,0,0,0.2);">
+                <img src="{{ image_url }}" alt="Analyzed Subject"
+                    style="width: 100%; border-radius: 16px; object-fit: cover;">
+                <div
+                    style="padding: 1rem 0.5rem 0.5rem; text-align: center; color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
+                    Input Metadata Subject
+                </div>
             </div>
 
-            <!-- Result Details -->
-            <div style="flex: 1.5; min-width: 250px;">
-                <h3 style="margin-bottom: 0.5rem;">Diagnosis Result:</h3>
+            <!-- Diagnostic Report -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div>
+                    <h4
+                        style="color: var(--accent-green); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1rem;">
+                        Diagnostic Conclusion</h4>
+                    <h2 style="font-size: 2.4rem; color: #fff; line-height: 1.2;">{{ condition_result|default:"Pathology Undetermined" }}</h2>
 
-                <p style="font-size: 1.5rem; font-weight: 600;
-                          color: var(--accent-green); margin-bottom: 1rem;">
-                    {{ condition_result|default:"Unknown Disease" }}
-                </p>
+                </div>
 
-                <!-- Confidence -->
-                <div style="background: var(--bg-body); padding: 1rem;
-                            border-radius: 8px; margin-bottom: 1.5rem;">
-
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span>Confidence Score</span>
-                        <span style="font-weight: 600;">{{ confidence }}%</span>
+                <!-- Confidence Metric -->
+                <div class="card" style="padding: 1.5rem; background: rgba(255,255,255,0.02);">
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: baseline;">
+                        <span style="color: var(--text-dim); font-weight: 500;">Inference Confidence</span>
+                        <span style="font-size: 1.5rem; font-weight: 700; color: var(--accent-blue);">{{ confidence }}%
+                            </span>
                     </div>
-
-                    <div style="width: 100%; height: 8px;
-                                background: rgba(255,255,255,0.1);
-                                border-radius: 4px; overflow: hidden;">
-
-                        <div style="width: {{ confidence }}%;
-                                    height: 100%;
-                                    background: linear-gradient(90deg, #10b981, #3b82f6);
-                                    border-radius: 4px;">
+                    <div
+                        style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden;">
+                        <div
+                            style="width: {{ confidence }}%; height: 100%; background: linear-gradient(90deg, var(--accent-green), var(--accent-blue)); transition: width 1s ease-out;">
                         </div>
                     </div>
                 </div>
 
-                <!-- Recommendation -->
-                <div style="padding: 1rem;
-                            border-left: 4px solid var(--accent-green);
-                            background: rgba(16, 185, 129, 0.05);
-                            border-radius: 0 8px 8px 0;">
-
-                    <h4 style="margin-bottom: 0.5rem;">Next Steps:</h4>
-                    <p style="font-size: 0.95rem; color: var(--text-dim); line-height: 1.5;">
-                        Based on the detected condition, we recommend isolating the affected plant
-                        and consulting a local agricultural expert for proper treatment.
+                <!-- Actionables -->
+                <div style="border-left: 3px solid var(--accent-green); padding-left: 2rem; margin-left: 0.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; color: #fff;">Strategic Protocol:</h4>
+                    <p style="color: var(--text-dim); line-height: 1.7; font-size: 1.05rem;">
+                        Identify and quarantine affected biological samples. Implement localized nutrient balancing and
+                        consider biocontrol intervention strategies as outlined in the global agricultural database.
                     </p>
                 </div>
-
             </div>
         </div>
     </div>
     {% endif %}
 </div>
 
+<style>
+    #dropZone:hover {
+        border-color: var(--accent-green);
+        background: rgba(16, 185, 129, 0.03);
+        transform: scale(1.005);
+    }
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-top: 2px solid #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
 <!-- Scripts -->
 <script>
     function previewImage(input) {
         const preview = document.getElementById('imagePreview');
         const placeholder = document.getElementById('uploadPlaceholder');
+        const dropZone = document.getElementById('dropZone');
 
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -117,14 +152,23 @@
                 preview.src = e.target.result;
                 preview.style.display = 'block';
                 placeholder.style.display = 'none';
+                dropZone.style.padding = '1.5rem';
+                dropZone.style.borderStyle = 'solid';
+                dropZone.style.borderColor = 'var(--glass-border)';
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
     document.querySelector('form').onsubmit = function () {
-        document.getElementById('spinner').style.display = 'inline-block';
-        this.querySelector('button').disabled = true;
+        const btnText = document.getElementById('btnText');
+        const loader = document.getElementById('loader');
+        const btn = document.getElementById('analyzeBtn');
+
+        btnText.style.display = 'none';
+        loader.style.display = 'flex';
+        btn.style.opacity = '0.8';
+        btn.disabled = true;
     };
 </script>
 {% endblock %}
