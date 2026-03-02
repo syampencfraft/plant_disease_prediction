@@ -4,6 +4,10 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .models import Prediction
 from .ml_logic import predict_disease
+import json
+from django.http import JsonResponse
+import google.generativeai as genai
+import os
 
 def home(request):
     diseases = [
@@ -114,12 +118,21 @@ def predict(request):
         if isinstance(res, (list, tuple)):
             result_text = res[0]
 
-        prediction_obj.result = result_text
-        prediction_obj.confidence = float(conf)
+        error_message = None
+        if result_text == "NOT_A_PLANT":
+            error_message = "Wrong image! Please upload a valid plant image."
+            prediction_obj.result = "Invalid Image (Not a Plant)"
+            prediction_obj.confidence = 0.0
+        else:
+            prediction_obj.result = result_text
+            prediction_obj.confidence = float(conf)
+        
         prediction_obj.save()
 
         context = {
-            'condition_result': result_text,
+            'pk': prediction_obj.pk,
+            'condition_result': result_text if not error_message else None,
+            'error_message': error_message,
             'confidence': f"{conf:.2f}",
             'image_url': prediction_obj.image.url
         }
@@ -143,3 +156,51 @@ def about_view(request):
 
 def contact_view(request):
     return render(request, 'detection/contact.html')
+
+@login_required
+def chatbot_response(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message', '')
+            
+            if not user_message:
+                return JsonResponse({'error': 'Empty message'}, status=400)
+
+            api_key = os.getenv('AI_AGENT_API_KEY')
+            if not api_key:
+                return JsonResponse({'error': 'AI API Key not configured'}, status=500)
+
+            genai.configure(api_key=api_key)
+            
+            # Dynamic model selection to avoid 404/not supported errors
+            try:
+                available_models = [m.name for m in genai.list_models() 
+                                    if 'generateContent' in m.supported_generation_methods]
+                
+                # Prefer flash models
+                model_name = 'models/gemini-1.5-flash' # Default fallback
+                flash_models = [m for m in available_models if 'flash' in m]
+                if flash_models:
+                    model_name = flash_models[0]
+                elif available_models:
+                    model_name = available_models[0]
+            except Exception:
+                model_name = 'models/gemini-pro' # Legacy fallback
+
+            model = genai.GenerativeModel(model_name)
+            
+            system_prompt = """
+            You are a helpful and knowledgeable Plant Health Expert for 'PlantScan AI'. 
+            Your goal is to help users identify plant diseases, provide care tips, and explain plant science. 
+            Keep your responses concise, professional, and friendly. 
+            If asked about something unrelated to plants or gardening, politely steer the conversation back to plants.
+            """
+            
+            response = model.generate_content(f"{system_prompt}\n\nUser: {user_message}\nAssistant:")
+            
+            return JsonResponse({'reply': response.text})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)

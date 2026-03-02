@@ -59,9 +59,11 @@ def predict_disease(image_path):
             img = Image.open(image_path)
             
             prompt = """
-            Identify the plant disease in this image. 
-            Provide the name of the disease and a confidence score between 0 and 100.
-            Format the response as JSON: {"disease": "Disease Name", "confidence": 95.5}
+            1. First, determine if the image contains a plant or part of a plant.
+            2. If it is NOT a plant, return JSON: {"disease": "NOT_A_PLANT", "confidence": 0}
+            3. If it IS a plant, identify the plant disease or if it is healthy.
+            4. Provide the name of the disease and a confidence score between 0 and 100.
+            5. Format the response as JSON: {"disease": "Disease Name", "confidence": 95.5}
             If the plant is healthy, say "Healthy".
             If you are unsure, provide your best guess.
             """

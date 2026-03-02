@@ -345,6 +345,10 @@
     <footer>
         &copy; 2026 PlantScan AI. All rights reserved.
     </footer>
+
+    {% if user.is_authenticated %}
+    {% include 'detection/chat_widget.html' %}
+    {% endif %}
 </body>
 
 </html>

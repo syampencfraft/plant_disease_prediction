@@ -45,11 +45,19 @@
                     style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">Record
                     ID: #{{ prediction.pk }}</span>
                 <form action="{% url 'delete_prediction' prediction.pk %}" method="post"
-                    onsubmit="return confirm('Securely erase this diagnostic record?');">
+                    onsubmit="return confirm('Permanently delete this diagnostic record?');">
                     {% csrf_token %}
                     <button type="submit" class="btn"
-                        style="background: rgba(251, 113, 133, 0.1); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.2); padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 8px;">
-                        Expunge
+                        style="background: rgba(251, 113, 133, 0.1); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.2); padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 8px; display: flex; align-items: center; gap: 0.4rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        Delete
                     </button>
                 </form>
             </div>

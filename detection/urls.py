@@ -11,4 +11,5 @@ urlpatterns = [
     path('delete/<int:pk>/', views.delete_prediction, name='delete_prediction'),
     path('about/', views.about_view, name='about'),
     path('contact/', views.contact_view, name='contact'),
+    path('chatbot/', views.chatbot_response, name='chatbot_response'),
 ]
